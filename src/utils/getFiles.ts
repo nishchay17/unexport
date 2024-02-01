@@ -1,11 +1,11 @@
 import { glob } from 'glob';
 
 import { ConfigError } from '../errors/ConfigError';
-import { getConfig } from './getConfig';
+import getConfig from './getConfig';
 
 export async function findFilesMatchingRegex() {
   try {
-    const config = await getConfig()();
+    const config = await getConfig();
     return await glob(config.include, { ignore: config.exclude });
   } catch (error) {
     if (!(error instanceof ConfigError)) {

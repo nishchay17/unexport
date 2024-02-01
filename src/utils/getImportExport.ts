@@ -1,6 +1,8 @@
+// import { dirname, resolve, normalize } from 'path';
 import traverse from '@babel/traverse';
 
 import getAST from './getAST';
+import { isNodeCoreModule } from './isNodeCoreModule';
 
 export function getImportExport(filePath: string) {
   const ast = getAST(filePath);
@@ -61,6 +63,14 @@ export function getImportExport(filePath: string) {
         source: path.node.source.value,
         specifiers: [],
       };
+      if (isNodeCoreModule(importInfo.source)) {
+        return;
+      }
+      // const absoluteImportPath = resolve(
+      //   dirname(filePath),
+      //   path.node.source.value,
+      // );
+      // console.log({ ss: normalize(absoluteImportPath) });
       path.node.specifiers.forEach((specifier: any) => {
         if (specifier.type === 'ImportDefaultSpecifier') {
           importInfo.specifiers.push({

@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 
 import { PackageError } from '../errors/PackageError';
 
-async function getInstalledPackages(packageJsonPath = 'package.json') {
+async function helper(packageJsonPath) {
   try {
     const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
     const packageJson = JSON.parse(packageJsonContent);
@@ -15,4 +15,14 @@ async function getInstalledPackages(packageJsonPath = 'package.json') {
   }
 }
 
-module.exports = getInstalledPackages;
+function getInstalledPackages(packageJsonPath = 'package.json') {
+  let pkg!: string[];
+  return async () => {
+    if (!pkg) {
+      pkg = await helper(packageJsonPath);
+    }
+    return pkg;
+  };
+}
+
+export default getInstalledPackages();

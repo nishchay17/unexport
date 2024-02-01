@@ -14,7 +14,7 @@ async function fetchConfig() {
   }
 }
 
-export function getConfig() {
+function getConfig() {
   let config!: { [key: string]: string | string[] };
   return async () => {
     if (!config) {
@@ -23,3 +23,5 @@ export function getConfig() {
     return config;
   };
 }
+
+export default getConfig();
