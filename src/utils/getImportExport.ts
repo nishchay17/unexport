@@ -71,6 +71,8 @@ export function getImportExport(filePath: string) {
       //   path.node.source.value,
       // );
       // console.log({ ss: normalize(absoluteImportPath) });
+      // const myPath = join(process.cwd(), path.node.source.value);
+      // console.log(myPath);
       path.node.specifiers.forEach((specifier: any) => {
         if (specifier.type === 'ImportDefaultSpecifier') {
           importInfo.specifiers.push({

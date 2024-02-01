@@ -7,7 +7,7 @@
     "unexport": "./bin/index.js"
   },
   "scripts": {
-    "start": "node build/src/index.js",
+    "start": "node build/src/dev.js",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
     "build": "tsc -p tsconfig.json",
@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .ts --ext .mts",
     "test": "jest --coverage",
     "prettier": "prettier --config .prettierrc --write .",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch --silent=false"
   },
   "keywords": [
     "CLI"
@@ -44,6 +44,7 @@
     "rimraf": "~5.0.5",
     "ts-api-utils": "~1.0.3",
     "ts-jest": "~29.1.2",
+    "ts-node": "^10.9.2",
     "typescript": "~5.3.3"
   },
   "engines": {
