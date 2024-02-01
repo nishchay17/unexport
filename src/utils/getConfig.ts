@@ -5,7 +5,6 @@ import { ConfigError } from '../errors/ConfigError';
 async function fetchConfig() {
   try {
     const packageJsonContent = await readFile('upexport.json', 'utf-8');
-    console.log(packageJsonContent);
     return JSON.parse(packageJsonContent);
   } catch (error) {
     console.log(error);

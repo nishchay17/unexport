@@ -15,14 +15,20 @@ async function helper(packageJsonPath) {
   }
 }
 
-function getInstalledPackages(packageJsonPath = 'package.json') {
+function _getInstalledPackages(packageJsonPath = 'package.json') {
   let pkg!: string[];
-  return async () => {
-    if (!pkg) {
-      pkg = await helper(packageJsonPath);
-    }
-    return pkg;
-  };
+  return [
+    async () => {
+      if (!pkg) {
+        pkg = await helper(packageJsonPath);
+      }
+      return pkg;
+    },
+    () => (pkg = undefined),
+  ];
 }
 
-export default getInstalledPackages();
+const [getInstalledPackages, clearPackage] = _getInstalledPackages();
+
+export { clearPackage };
+export default getInstalledPackages;
