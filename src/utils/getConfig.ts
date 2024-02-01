@@ -8,7 +8,8 @@ async function fetchConfig() {
     return JSON.parse(packageJsonContent);
   } catch (error) {
     if ((error as Error).message.includes('ENOENT')) {
-      throw new ConfigError('upexport.json not found');
+      console.error('upexport.json not found');
+      process.exit(1);
     }
     throw new ConfigError('Error reading upexport.json');
   }

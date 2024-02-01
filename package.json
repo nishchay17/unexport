@@ -2,9 +2,9 @@
   "name": "unexport",
   "version": "1.0.1",
   "description": "find unused exports",
-  "main": "./build/index.js",
+  "main": "./bin/index.js",
   "bin": {
-    "unexport": "./build/index.js"
+    "unexport": "./bin/index.js"
   },
   "scripts": {
     "start": "node build/src/index.js",

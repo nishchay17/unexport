@@ -1,7 +1,7 @@
 import { findFilesMatchingRegex } from './utils/getFiles';
 import { getImportExport } from './utils/getImportExport';
 
-(async () => {
+export async function start() {
   try {
     const files: string[] = await findFilesMatchingRegex();
     const res = await Promise.all(
@@ -11,4 +11,4 @@ import { getImportExport } from './utils/getImportExport';
   } catch (error) {
     console.log(error);
   }
-})();
+}
