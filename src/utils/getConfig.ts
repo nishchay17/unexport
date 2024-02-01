@@ -8,21 +8,25 @@ async function fetchConfig() {
     return JSON.parse(packageJsonContent);
   } catch (error) {
     if ((error as Error).message.includes('ENOENT')) {
-      console.error('upexport.json not found');
-      process.exit(1);
+      throw new ConfigError('upexport.json not found');
     }
     throw new ConfigError('Error reading upexport.json');
   }
 }
 
-function getConfig() {
+function _getConfig() {
   let config!: { [key: string]: string | string[] };
-  return async () => {
-    if (!config) {
-      config = await fetchConfig();
-    }
-    return config;
-  };
+  return [
+    async () => {
+      if (!config) {
+        config = await fetchConfig();
+      }
+      return config;
+    },
+    () => (config = undefined),
+  ];
 }
 
-export default getConfig();
+const [getConfig, clearConfig] = _getConfig();
+export { clearConfig };
+export default getConfig;
