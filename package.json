@@ -7,7 +7,7 @@
     "unexport": "./bin/index.js"
   },
   "scripts": {
-    "start": "node build/src/dev.js",
+    "start": "node build/dev.js",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
     "build": "tsc -p tsconfig.json",
