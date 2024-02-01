@@ -1,8 +1,8 @@
-const traverse = require("@babel/traverse").default;
+import traverse from '@babel/traverse';
 
-const getAST = require("./getAST");
+import getAST from './getAST';
 
-function getImportExport(filePath: string) {
+export function getImportExport(filePath: string) {
   const ast = getAST(filePath);
   const exports = new Set();
   const imports = new Set();
@@ -14,13 +14,13 @@ function getImportExport(filePath: string) {
         if (declaration.id) {
           exports.add({
             localName: declaration.id.name,
-            type: "named",
+            type: 'named',
           });
         } else if (declaration.declarations) {
           declaration.declarations.forEach((decl: any) => {
             exports.add({
               localName: decl.id.name,
-              type: "named",
+              type: 'named',
             });
           });
         }
@@ -28,7 +28,7 @@ function getImportExport(filePath: string) {
         path.node.specifiers.forEach((specifier: any) => {
           exports.add({
             localName: specifier.exported.name,
-            type: "named",
+            type: 'named',
           });
         });
       }
@@ -39,12 +39,12 @@ function getImportExport(filePath: string) {
         if (declaration.id) {
           exports.add({
             localName: declaration.id.name,
-            type: "default",
+            type: 'default',
           });
         } else if (declaration.name) {
           exports.add({
             localName: declaration.name,
-            type: "default",
+            type: 'default',
           });
         }
       }
@@ -62,19 +62,19 @@ function getImportExport(filePath: string) {
         specifiers: [],
       };
       path.node.specifiers.forEach((specifier: any) => {
-        if (specifier.type === "ImportDefaultSpecifier") {
+        if (specifier.type === 'ImportDefaultSpecifier') {
           importInfo.specifiers.push({
-            type: "default",
+            type: 'default',
             localName: specifier.local.name,
           });
-        } else if (specifier.type === "ImportNamespaceSpecifier") {
+        } else if (specifier.type === 'ImportNamespaceSpecifier') {
           importInfo.specifiers.push({
-            type: "namespace",
+            type: 'namespace',
             localName: specifier.local.name,
           });
-        } else if (specifier.type === "ImportSpecifier") {
+        } else if (specifier.type === 'ImportSpecifier') {
           importInfo.specifiers.push({
-            type: "named",
+            type: 'named',
             importedName: specifier.imported.name,
             localName: specifier.local.name,
           });
@@ -85,10 +85,8 @@ function getImportExport(filePath: string) {
   });
 
   return {
-    file: filePath.replace(/\\/g, "/"),
+    file: filePath.replace(/\\/g, '/'),
     imports: Array.from(imports),
     exports: Array.from(exports),
   };
 }
-
-module.exports = getImportExport;
