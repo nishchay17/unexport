@@ -10,35 +10,41 @@ export async function getImportExport(filePath: string) {
   const ast = getAST(filePath);
   const installedPackages = await getInstalledPackages();
 
-  const exports = new Set<ImportExportData>();
-  const imports = new Set<ImportExportData>();
+  const exports = new Set<string>();
+  const imports = new Set<string>();
 
   traverse(ast, {
     ExportNamedDeclaration(path: any) {
       if (path.node.declaration) {
         const declaration = path.node.declaration;
         if (declaration.id) {
-          exports.add({
-            name: declaration.id.name,
-            type: 'named',
-            source: filePath.replace(/\\/g, '/'),
-          });
-        } else if (declaration.declarations) {
-          declaration.declarations.forEach((decl: any) => {
-            exports.add({
-              name: decl.id.name,
+          exports.add(
+            JSON.stringify({
+              name: declaration.id.name,
               type: 'named',
               source: filePath.replace(/\\/g, '/'),
-            });
+            }),
+          );
+        } else if (declaration.declarations) {
+          declaration.declarations.forEach((decl: any) => {
+            exports.add(
+              JSON.stringify({
+                name: decl.id.name,
+                type: 'named',
+                source: filePath.replace(/\\/g, '/'),
+              }),
+            );
           });
         }
       } else if (path.node.specifiers) {
         path.node.specifiers.forEach((specifier: any) => {
-          exports.add({
-            name: specifier.exported.name,
-            type: 'named',
-            source: filePath.replace(/\\/g, '/'),
-          });
+          exports.add(
+            JSON.stringify({
+              name: specifier.exported.name,
+              type: 'named',
+              source: filePath.replace(/\\/g, '/'),
+            }),
+          );
         });
       }
     },
@@ -46,17 +52,21 @@ export async function getImportExport(filePath: string) {
       if (path.node.declaration) {
         const declaration = path.node.declaration;
         if (declaration.id) {
-          exports.add({
-            name: declaration.id.name,
-            type: 'default',
-            source: filePath.replace(/\\/g, '/'),
-          });
+          exports.add(
+            JSON.stringify({
+              name: declaration.id.name,
+              type: 'default',
+              source: filePath.replace(/\\/g, '/'),
+            }),
+          );
         } else if (declaration.name) {
-          exports.add({
-            name: declaration.name,
-            type: 'default',
-            source: filePath.replace(/\\/g, '/'),
-          });
+          exports.add(
+            JSON.stringify({
+              name: declaration.name,
+              type: 'default',
+              source: filePath.replace(/\\/g, '/'),
+            }),
+          );
         }
       }
     },
@@ -90,13 +100,17 @@ export async function getImportExport(filePath: string) {
           };
         }
       });
-      imports.add(importInfo);
+      imports.add(JSON.stringify(importInfo));
     },
   });
 
   return {
     file: filePath.replace(/\\/g, '/'),
-    imports: Array.from(imports),
-    exports: Array.from(exports),
+    imports: Array.from(imports).map((it) =>
+      JSON.parse(it),
+    ) as ImportExportData[],
+    exports: Array.from(exports).map((it) =>
+      JSON.parse(it),
+    ) as ImportExportData[],
   };
 }
