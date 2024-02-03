@@ -1,13 +1,17 @@
-// import { dirname, resolve, normalize } from 'path';
 import traverse from '@babel/traverse';
 
 import getAST from './getAST';
+import getInstalledPackages from './getPackageDependencies';
+import resolveImportPath from './getRelativeImport';
 import { isNodeCoreModule } from './isNodeCoreModule';
+import { ImportExportData } from '../type';
 
-export function getImportExport(filePath: string) {
+export async function getImportExport(filePath: string) {
   const ast = getAST(filePath);
-  const exports = new Set();
-  const imports = new Set();
+  const installedPackages = await getInstalledPackages();
+
+  const exports = new Set<ImportExportData>();
+  const imports = new Set<ImportExportData>();
 
   traverse(ast, {
     ExportNamedDeclaration(path: any) {
@@ -15,22 +19,25 @@ export function getImportExport(filePath: string) {
         const declaration = path.node.declaration;
         if (declaration.id) {
           exports.add({
-            localName: declaration.id.name,
+            name: declaration.id.name,
             type: 'named',
+            source: filePath.replace(/\\/g, '/'),
           });
         } else if (declaration.declarations) {
           declaration.declarations.forEach((decl: any) => {
             exports.add({
-              localName: decl.id.name,
+              name: decl.id.name,
               type: 'named',
+              source: filePath.replace(/\\/g, '/'),
             });
           });
         }
       } else if (path.node.specifiers) {
         path.node.specifiers.forEach((specifier: any) => {
           exports.add({
-            localName: specifier.exported.name,
+            name: specifier.exported.name,
             type: 'named',
+            source: filePath.replace(/\\/g, '/'),
           });
         });
       }
@@ -40,56 +47,47 @@ export function getImportExport(filePath: string) {
         const declaration = path.node.declaration;
         if (declaration.id) {
           exports.add({
-            localName: declaration.id.name,
+            name: declaration.id.name,
             type: 'default',
+            source: filePath.replace(/\\/g, '/'),
           });
         } else if (declaration.name) {
           exports.add({
-            localName: declaration.name,
+            name: declaration.name,
             type: 'default',
+            source: filePath.replace(/\\/g, '/'),
           });
         }
       }
     },
     ImportDeclaration(path: any) {
-      const importInfo: {
-        source: string;
-        specifiers: {
-          type: string;
-          localName: string;
-          importedName?: string;
-        }[];
-      } = {
-        source: path.node.source.value,
-        specifiers: [],
-      };
-      if (isNodeCoreModule(importInfo.source)) {
+      if (isNodeCoreModule(path.node.source.value)) {
         return;
       }
-      // const absoluteImportPath = resolve(
-      //   dirname(filePath),
-      //   path.node.source.value,
-      // );
-      // console.log({ ss: normalize(absoluteImportPath) });
-      // const myPath = join(process.cwd(), path.node.source.value);
-      // console.log(myPath);
+      const source = installedPackages.includes(path.node.source.value)
+        ? path.node.source.value
+        : resolveImportPath(filePath, path.node.source.value);
+      let importInfo: ImportExportData;
+
       path.node.specifiers.forEach((specifier: any) => {
         if (specifier.type === 'ImportDefaultSpecifier') {
-          importInfo.specifiers.push({
+          importInfo = {
             type: 'default',
-            localName: specifier.local.name,
-          });
+            name: specifier.local.name,
+            source,
+          };
         } else if (specifier.type === 'ImportNamespaceSpecifier') {
-          importInfo.specifiers.push({
+          importInfo = {
             type: 'namespace',
-            localName: specifier.local.name,
-          });
+            name: specifier.local.name,
+            source,
+          };
         } else if (specifier.type === 'ImportSpecifier') {
-          importInfo.specifiers.push({
+          importInfo = {
             type: 'named',
-            importedName: specifier.imported.name,
-            localName: specifier.local.name,
-          });
+            name: specifier.imported.name,
+            source,
+          };
         }
       });
       imports.add(importInfo);

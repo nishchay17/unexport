@@ -1,5 +1,6 @@
 import { findFilesMatchingRegex } from './utils/getFiles';
 import { getImportExport } from './utils/getImportExport';
+import getUnusedExports from './utils/getUnusedExports';
 
 export async function start() {
   try {
@@ -7,7 +8,7 @@ export async function start() {
     const res = await Promise.all(
       files.map(async (it) => await getImportExport(it)),
     );
-    console.log(JSON.stringify(res));
+    console.log(JSON.stringify(getUnusedExports(res)));
   } catch (error) {
     console.log(error);
   }
