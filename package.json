@@ -2,12 +2,13 @@
   "name": "unexport",
   "version": "1.0.1",
   "description": "find unused exports",
-  "main": "./bin/index.js",
+  "main": "./bin/cli.js",
   "bin": {
-    "unexport": "./bin/index.js"
+    "unexport": "./bin/cli.js"
   },
   "scripts": {
-    "start": "node build/dev.js",
+    "cli": "node build/cli.js",
+    "dev": "node build/dev.js",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
     "build": "tsc -p tsconfig.json",
@@ -27,13 +28,14 @@
     "@babel/parser": "^7.23.9",
     "@babel/traverse": "^7.23.9",
     "glob": "^10.3.10",
-    "tslib": "~2.6.2"
+    "tslib": "~2.6.2",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@types/babel__parser": "^7.1.1",
     "@types/babel__traverse": "^7.20.5",
-    "@types/jest": "~29.5.11",
-    "@types/node": "^20.11.15",
+    "@types/jest": "~29.5.12",
+    "@types/node": "^20.11.16",
     "@typescript-eslint/eslint-plugin": "~6.15.0",
     "@typescript-eslint/parser": "~6.15.0",
     "eslint": "~8.56.0",

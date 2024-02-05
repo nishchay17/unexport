@@ -1,3 +1,4 @@
+import createConfig from './utils/createConfig';
 import { findFilesMatchingRegex } from './utils/getFiles';
 import { getImportExport } from './utils/getImportExport';
 import getUnusedExports from './utils/getUnusedExports';
@@ -8,8 +9,13 @@ export async function start() {
     const res = await Promise.all(
       files.map(async (it) => await getImportExport(it)),
     );
-    console.log(JSON.stringify(getUnusedExports(res)));
+    const resExport = await getUnusedExports(res);
+    console.log(resExport);
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function init() {
+  createConfig();
 }
