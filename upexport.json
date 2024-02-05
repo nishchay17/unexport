@@ -1,5 +1,5 @@
 {
-  "$schema": "./schema.json",
-  "exclude": ["./node_modules/**", "build/**", "__tests__/**"],
+  "$schema": "https://cdn.jsdelivr.net/gh/nishchay17/unexport@main/schema.json",
+  "exclude": ["./node_modules/**", "build/**"],
   "include": ["**/*.ts"]
 }
