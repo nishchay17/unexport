@@ -8,6 +8,7 @@ import { ImportExportData } from '../type';
 
 export async function getImportExport(filePath: string) {
   const ast = getAST(filePath);
+  const _filePath = filePath.replace(/\\/g, '/');
   const installedPackages = await getInstalledPackages();
 
   const exports = new Set<string>();
@@ -22,7 +23,8 @@ export async function getImportExport(filePath: string) {
             JSON.stringify({
               name: declaration.id.name,
               type: 'named',
-              source: filePath.replace(/\\/g, '/'),
+              source: _filePath,
+              file: _filePath,
             }),
           );
         } else if (declaration.declarations) {
@@ -31,7 +33,8 @@ export async function getImportExport(filePath: string) {
               JSON.stringify({
                 name: decl.id.name,
                 type: 'named',
-                source: filePath.replace(/\\/g, '/'),
+                source: _filePath,
+                file: _filePath,
               }),
             );
           });
@@ -42,7 +45,8 @@ export async function getImportExport(filePath: string) {
             JSON.stringify({
               name: specifier.exported.name,
               type: 'named',
-              source: filePath.replace(/\\/g, '/'),
+              source: _filePath,
+              file: _filePath,
             }),
           );
         });
@@ -56,7 +60,8 @@ export async function getImportExport(filePath: string) {
             JSON.stringify({
               name: declaration.id.name,
               type: 'default',
-              source: filePath.replace(/\\/g, '/'),
+              source: _filePath,
+              file: _filePath,
             }),
           );
         } else if (declaration.name) {
@@ -64,7 +69,8 @@ export async function getImportExport(filePath: string) {
             JSON.stringify({
               name: declaration.name,
               type: 'default',
-              source: filePath.replace(/\\/g, '/'),
+              source: _filePath,
+              file: _filePath,
             }),
           );
         }
@@ -82,18 +88,21 @@ export async function getImportExport(filePath: string) {
       path.node.specifiers.forEach((specifier: any) => {
         if (specifier.type === 'ImportDefaultSpecifier') {
           importInfo = {
+            file: _filePath,
             type: 'default',
             name: specifier.local.name,
             source,
           };
         } else if (specifier.type === 'ImportNamespaceSpecifier') {
           importInfo = {
+            file: _filePath,
             type: 'namespace',
             name: specifier.local.name,
             source,
           };
         } else if (specifier.type === 'ImportSpecifier') {
           importInfo = {
+            file: _filePath,
             type: 'named',
             name: specifier.imported.name,
             source,
