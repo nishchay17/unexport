@@ -1,16 +1,22 @@
+import print from './print';
 import createConfig from './utils/createConfig';
 import { findFilesMatchingRegex } from './utils/getFiles';
 import { getImportExport } from './utils/getImportExport';
+import getInstalledPackages from './utils/getPackageDependencies';
 import getUnusedExports from './utils/getUnusedExports';
 
 export async function start() {
   try {
-    const files: string[] = await findFilesMatchingRegex();
-    const res = await Promise.all(
+    const files = await findFilesMatchingRegex();
+    const fileImportExportData = await Promise.all(
       files.map(async (it) => await getImportExport(it)),
     );
-    const resExport = await getUnusedExports(res);
-    console.log(resExport);
+    const installedPackages = await getInstalledPackages();
+    const resExport = await getUnusedExports(
+      fileImportExportData,
+      installedPackages,
+    );
+    print(resExport);
   } catch (error) {
     console.log(error);
   }
