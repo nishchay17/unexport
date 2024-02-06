@@ -115,11 +115,11 @@ export async function getImportExport(filePath: string) {
 
   return {
     file: filePath.replace(/\\/g, '/'),
-    imports: Array.from(imports).map((it) =>
-      JSON.parse(it),
-    ) as ImportExportData[],
-    exports: Array.from(exports).map((it) =>
-      JSON.parse(it),
-    ) as ImportExportData[],
+    imports: Array.from(imports)
+      .filter((it) => it)
+      .map((it) => JSON.parse(it)) as ImportExportData[],
+    exports: Array.from(exports)
+      .filter((it) => it)
+      .map((it) => JSON.parse(it)) as ImportExportData[],
   };
 }
