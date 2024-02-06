@@ -1,6 +1,6 @@
 {
   "name": "unexport",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "find unused exports",
   "main": "./bin/index.js",
   "bin": {
