@@ -2,9 +2,9 @@
   "name": "unexport",
   "version": "1.0.1",
   "description": "find unused exports",
-  "main": "./bin/cli.js",
+  "main": "./bin/index.js",
   "bin": {
-    "unexport": "./bin/cli.js"
+    "unexport": "./bin/index.js"
   },
   "scripts": {
     "cli": "node build/cli.js",
