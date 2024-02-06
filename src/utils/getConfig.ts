@@ -7,7 +7,6 @@ async function fetchConfig() {
     const packageJsonContent = await readFile('upexport.json', 'utf-8');
     return JSON.parse(packageJsonContent);
   } catch (error) {
-    console.log(error);
     if ((error as Error).message.includes('ENOENT')) {
       throw new ConfigError('upexport.json not found');
     }

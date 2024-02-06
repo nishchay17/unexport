@@ -1,6 +1,5 @@
 import { glob } from 'glob';
 
-import { ConfigError } from '../errors/ConfigError';
 import getConfig from './getConfig';
 
 export async function findFilesMatchingRegex() {
@@ -8,12 +7,7 @@ export async function findFilesMatchingRegex() {
     const config = await getConfig();
     return await glob(config.include, { ignore: config.exclude });
   } catch (error) {
-    if (!(error instanceof ConfigError)) {
-      console.error(
-        'Error while searching for files:',
-        (error as Error)?.message,
-      );
-    }
-    throw error;
+    console.log((error as Error).message);
+    process.exit(1);
   }
 }
