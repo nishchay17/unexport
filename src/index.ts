@@ -5,7 +5,7 @@ import { getImportExport } from './utils/getImportExport';
 import getInstalledPackages from './utils/getPackageDependencies';
 import getUnusedExports from './utils/getUnusedExports';
 
-export async function start() {
+export async function start(onlyPackages: boolean, onlyFile: boolean) {
   try {
     const files = await findFilesMatchingRegex();
     const fileImportExportData = await Promise.all(
@@ -16,7 +16,7 @@ export async function start() {
       fileImportExportData,
       installedPackages,
     );
-    print(resExport);
+    print(resExport, { onlyPackages, onlyFile });
   } catch (error) {
     console.log(error);
   }
